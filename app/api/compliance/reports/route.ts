@@ -66,12 +66,7 @@ export async function GET(request: NextRequest) {
   const format = (searchParams.get('format') as 'csv' | 'json' | 'both') || 'json';
   const registry =
     (searchParams.get('registry') as
-      | 'verra'
-      | 'gold-standard'
-      | 'car'
-      | 'plan-vivo'
-      | 'cdm'
-      | 'generic') || 'verra';
+      'verra' | 'gold-standard' | 'car' | 'plan-vivo' | 'cdm' | 'generic') || 'verra';
 
   const startDate = parseDateParam(
     searchParams.get('startDate'),
@@ -95,10 +90,9 @@ export async function GET(request: NextRequest) {
     const generator = getComplianceReportGenerator();
     const response = await generator.generateReport({
       reportType,
-      format === 'both' ? 'json' : format,
+      format: format === 'both' ? 'json' : format,
       registry,
-      startDate,
-      endDate,
+      dateRange: { start: startDate, end: endDate },
       filters,
     });
     const contentType =
@@ -172,7 +166,7 @@ export async function POST(request: NextRequest) {
       return new NextResponse(response.csvContent, {
         headers: {
           'Content-Type': 'text/csv',
-          'Content-Disposition': `attachment; filename="compliance-${type}-${registry}-${new Date().toISOString().split('T')[0]}.csv`",
+          'Content-Disposition': `attachment; filename="compliance-${type}-${registry}-${new Date().toISOString().split('T')[0]}.csv"`,
         },
       });
     }
@@ -216,10 +210,7 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ success: true });
     }
 
-    return NextResponse.json(
-      { error: 'userId is required' },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: 'userId is required' }, { status: 400 });
   } catch (error) {
     console.error('[api/compliance/reports] DELETE error:', error);
     return NextResponse.json(
