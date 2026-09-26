@@ -23,7 +23,14 @@ import {
   CardDescription,
   CardContent,
 } from '@/components/molecules/Card';
-import { Table, TableHeader, TableHead, TableRow, TableCell } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableHeader,
+  TableHead,
+  TableRow,
+  TableCell,
+} from '@/components/ui/table';
 import {
   TreePine,
   TrendingUp,
@@ -36,6 +43,10 @@ import {
   Crown,
   Sparkles,
   Gift,
+  Leaf,
+  ChevronUp,
+  ChevronDown,
+  Wallet,
 } from 'lucide-react';
 import Link from 'next/link';
 
