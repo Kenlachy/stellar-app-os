@@ -9,11 +9,38 @@
 'use client';
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { Check, X, Star, AlertCircle, Info, ChevronDown, ChevronUp, Search, Filter, Columns, Download, Share2, Heart, MapPin, Tag, DollarSign, Shield, Users, Leaf, Award } from 'lucide-react';
+import {
+  Check,
+  X,
+  Star,
+  AlertCircle,
+  Info,
+  ChevronDown,
+  ChevronUp,
+  Search,
+  Filter,
+  Columns,
+  Download,
+  Share2,
+  Heart,
+  MapPin,
+  Tag,
+  DollarSign,
+  Shield,
+  Users,
+  Leaf,
+  Award,
+} from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -21,7 +48,7 @@ import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Project,
-  ComparisonCriteria,
+  type ComparisonCriteria,
   COMPARISON_CRITERIA,
   getProjects,
   getComparisonProjects,
@@ -30,7 +57,7 @@ import {
   formatPrice,
   getAverageRating,
   getCoBenefitIcon,
-  Project as ProjectType,
+  type Project as ProjectType,
 } from '@/lib/projectComparison';
 
 interface ProjectComparisonToolProps {
@@ -42,7 +69,7 @@ export function ProjectComparisonTool({ initialProjectIds = [] }: ProjectCompari
   const [selectedIds, setSelectedIds] = useState<string[]>(initialProjectIds);
   const [comparisonProjects, setComparisonProjects] = useState<ProjectType[]>([]);
   const [visibleCriteria, setVisibleCriteria] = useState<string[]>(
-    COMPARISON_CRITERIA.filter(c => c.defaultVisible).map(c => c.id)
+    COMPARISON_CRITERIA.filter((c) => c.defaultVisible).map((c) => c.id)
   );
   const [filters, setFilters] = useState({
     projectType: '',
@@ -54,7 +81,10 @@ export function ProjectComparisonTool({ initialProjectIds = [] }: ProjectCompari
     search: '',
   });
   const [loading, setLoading] = useState(false);
-  const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' }>({ key: 'name', direction: 'asc' });
+  const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' }>({
+    key: 'name',
+    direction: 'asc',
+  });
   const [activeTab, setActiveTab] = useState<'compare' | 'details'>('compare');
 
   // Load projects on mount
@@ -87,7 +117,7 @@ export function ProjectComparisonTool({ initialProjectIds = [] }: ProjectCompari
     try {
       const data = await getComparisonProjects(selectedIds);
       // Maintain order of selectedIds
-      const ordered = selectedIds.map(id => data.find(p => p.id === id)).filter(Boolean);
+      const ordered = selectedIds.map((id) => data.find((p) => p.id === id)).filter(Boolean);
       setComparisonProjects(ordered as ProjectType[]);
     } catch (error) {
       console.error('Failed to load comparison projects:', error);
@@ -95,9 +125,9 @@ export function ProjectComparisonTool({ initialProjectIds = [] }: ProjectCompari
   };
 
   const toggleProject = (id: string) => {
-    setSelectedIds(prev => {
+    setSelectedIds((prev) => {
       if (prev.includes(id)) {
-        return prev.filter(p => p !== id);
+        return prev.filter((p) => p !== id);
       }
       if (prev.length >= 5) {
         // Max 5 projects for comparison
@@ -109,7 +139,7 @@ export function ProjectComparisonTool({ initialProjectIds = [] }: ProjectCompari
   };
 
   const handleSort = (key: string) => {
-    setSortConfig(prev => ({
+    setSortConfig((prev) => ({
       key,
       direction: prev.key === key && prev.direction === 'asc' ? 'desc' : 'asc',
     }));
@@ -120,30 +150,31 @@ export function ProjectComparisonTool({ initialProjectIds = [] }: ProjectCompari
 
     if (filters.search) {
       const search = filters.search.toLowerCase();
-      result = result.filter(p => 
-        p.name.toLowerCase().includes(search) ||
-        p.location.toLowerCase().includes(search) ||
-        p.country.toLowerCase().includes(search)
+      result = result.filter(
+        (p) =>
+          p.name.toLowerCase().includes(search) ||
+          p.location.toLowerCase().includes(search) ||
+          p.country.toLowerCase().includes(search)
       );
     }
 
     if (filters.projectType) {
-      result = result.filter(p => p.projectType === filters.projectType);
+      result = result.filter((p) => p.projectType === filters.projectType);
     }
     if (filters.country) {
-      result = result.filter(p => p.country === filters.country);
+      result = result.filter((p) => p.country === filters.country);
     }
     if (filters.minPrice) {
-      result = result.filter(p => p.pricePerTon >= parseFloat(filters.minPrice));
+      result = result.filter((p) => p.pricePerTon >= parseFloat(filters.minPrice));
     }
     if (filters.maxPrice) {
-      result = result.filter(p => p.pricePerTon <= parseFloat(filters.maxPrice));
+      result = result.filter((p) => p.pricePerTon <= parseFloat(filters.maxPrice));
     }
     if (filters.riskRating) {
-      result = result.filter(p => p.riskRating === filters.riskRating);
+      result = result.filter((p) => p.riskRating === filters.riskRating);
     }
     if (filters.verifier) {
-      result = result.filter(p => p.verifier === filters.verifier);
+      result = result.filter((p) => p.verifier === filters.verifier);
     }
 
     // Sort
@@ -159,17 +190,23 @@ export function ProjectComparisonTool({ initialProjectIds = [] }: ProjectCompari
     return result;
   }, [allProjects, filters, sortConfig]);
 
-  const availableCountries = useMemo(() => 
-    [...new Set(allProjects.map(p => p.country))].sort(),
+  const availableCountries = useMemo(
+    () => [...new Set(allProjects.map((p) => p.country))].sort(),
     [allProjects]
   );
 
-  const availableVerifiers = useMemo(() => 
-    [...new Set(allProjects.map(p => p.verifier))].sort(),
+  const availableVerifiers = useMemo(
+    () => [...new Set(allProjects.map((p) => p.verifier))].sort(),
     [allProjects]
   );
 
-  const projectTypes = ['reforestation', 'avoided_deforestation', 'renewable_energy', 'community', 'blue_carbon'];
+  const projectTypes = [
+    'reforestation',
+    'avoided_deforestation',
+    'renewable_energy',
+    'community',
+    'blue_carbon',
+  ];
 
   return (
     <TooltipProvider>
@@ -179,13 +216,12 @@ export function ProjectComparisonTool({ initialProjectIds = [] }: ProjectCompari
           <div>
             <h1 className="text-2xl font-bold">Project Comparison Tool</h1>
             <p className="text-muted-foreground">
-              Compare carbon offset projects side-by-side: price, methodology, verifier, risk, co-benefits, reviews
+              Compare carbon offset projects side-by-side: price, methodology, verifier, risk,
+              co-benefits, reviews
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <Badge className="bg-primary/10 text-primary">
-              {selectedIds.length}/5 selected
-            </Badge>
+            <Badge className="bg-primary/10 text-primary">{selectedIds.length}/5 selected</Badge>
             {selectedIds.length > 0 && (
               <Button variant="secondary" onClick={() => setActiveTab('compare')}>
                 <Columns className="w-4 h-4 mr-2" />
@@ -204,29 +240,46 @@ export function ProjectComparisonTool({ initialProjectIds = [] }: ProjectCompari
                 <Input
                   placeholder="Search projects..."
                   value={filters.search}
-                  onChange={e => setFilters(f => ({ ...f, search: e.target.value }))}
+                  onChange={(e) => setFilters((f) => ({ ...f, search: e.target.value }))}
                   className="pl-10"
                 />
               </div>
-              <Select value={filters.projectType} onValueChange={v => setFilters(f => ({ ...f, projectType: v }))}>
+              <Select
+                value={filters.projectType}
+                onValueChange={(v) => setFilters((f) => ({ ...f, projectType: v }))}
+              >
                 <SelectTrigger className="w-[150px]">
                   <SelectValue placeholder="Type" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="">All Types</SelectItem>
-                  {projectTypes.map(t => <SelectItem key={t} value={t}>{t.replace('_', ' ')}</SelectItem>)}
+                  {projectTypes.map((t) => (
+                    <SelectItem key={t} value={t}>
+                      {t.replace('_', ' ')}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
-              <Select value={filters.country} onValueChange={v => setFilters(f => ({ ...f, country: v }))}>
+              <Select
+                value={filters.country}
+                onValueChange={(v) => setFilters((f) => ({ ...f, country: v }))}
+              >
                 <SelectTrigger className="w-[150px]">
                   <SelectValue placeholder="Country" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="">All Countries</SelectItem>
-                  {availableCountries.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                  {availableCountries.map((c) => (
+                    <SelectItem key={c} value={c}>
+                      {c}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
-              <Select value={filters.riskRating} onValueChange={v => setFilters(f => ({ ...f, riskRating: v }))}>
+              <Select
+                value={filters.riskRating}
+                onValueChange={(v) => setFilters((f) => ({ ...f, riskRating: v }))}
+              >
                 <SelectTrigger className="w-[130px]">
                   <SelectValue placeholder="Risk" />
                 </SelectTrigger>
@@ -242,20 +295,31 @@ export function ProjectComparisonTool({ initialProjectIds = [] }: ProjectCompari
                   type="number"
                   placeholder="Min $/ton"
                   value={filters.minPrice}
-                  onChange={e => setFilters(f => ({ ...f, minPrice: e.target.value }))}
+                  onChange={(e) => setFilters((f) => ({ ...f, minPrice: e.target.value }))}
                   className="w-[120px]"
                 />
                 <Input
                   type="number"
                   placeholder="Max $/ton"
                   value={filters.maxPrice}
-                  onChange={e => setFilters(f => ({ ...f, maxPrice: e.target.value }))}
+                  onChange={(e) => setFilters((f) => ({ ...f, maxPrice: e.target.value }))}
                   className="w-[120px]"
                 />
               </div>
-              <Button variant="outline" onClick={() => setFilters({
-                projectType: '', country: '', minPrice: '', maxPrice: '', riskRating: '', verifier: '', search: ''
-              })}>
+              <Button
+                variant="outline"
+                onClick={() =>
+                  setFilters({
+                    projectType: '',
+                    country: '',
+                    minPrice: '',
+                    maxPrice: '',
+                    riskRating: '',
+                    verifier: '',
+                    search: '',
+                  })
+                }
+              >
                 <Filter className="w-4 h-4 mr-2" />
                 Clear Filters
               </Button>
@@ -269,16 +333,21 @@ export function ProjectComparisonTool({ initialProjectIds = [] }: ProjectCompari
             <div className="flex items-center gap-2 flex-wrap">
               <Label className="text-sm font-medium">Visible Columns:</Label>
               <div className="flex flex-wrap gap-2">
-                {COMPARISON_CRITERIA.map(criterion => (
-                  <label key={criterion.id} className="inline-flex items-center gap-1 cursor-pointer">
+                {COMPARISON_CRITERIA.map((criterion) => (
+                  <label
+                    key={criterion.id}
+                    className="inline-flex items-center gap-1 cursor-pointer"
+                  >
                     <input
                       type="checkbox"
                       checked={visibleCriteria.includes(criterion.id)}
-                      onChange={e => setVisibleCriteria(prev => 
-                        e.target.checked 
-                          ? [...prev, criterion.id] 
-                          : prev.filter(v => v !== criterion.id)
-                      )}
+                      onChange={(e) =>
+                        setVisibleCriteria((prev) =>
+                          e.target.checked
+                            ? [...prev, criterion.id]
+                            : prev.filter((v) => v !== criterion.id)
+                        )
+                      }
                       className="rounded border-input"
                     />
                     <span className="text-sm">{criterion.label}</span>
@@ -323,22 +392,36 @@ export function ProjectComparisonTool({ initialProjectIds = [] }: ProjectCompari
                 {filteredProjects.length} projects
               </span>
               <div className="flex items-center gap-2">
-                <Select value={sortConfig.key} onValueChange={v => setSortConfig(s => ({ ...s, key: v }))}>
+                <Select
+                  value={sortConfig.key}
+                  onValueChange={(v) => setSortConfig((s) => ({ ...s, key: v }))}
+                >
                   <SelectTrigger className="w-[180px]">
                     <SelectValue placeholder="Sort by" />
                   </SelectTrigger>
                   <SelectContent>
-                    {COMPARISON_CRITERIA.filter(c => c.sortable).map(c => (
-                      <SelectItem key={c.id} value={c.id}>{c.label}</SelectItem>
+                    {COMPARISON_CRITERIA.filter((c) => c.sortable).map((c) => (
+                      <SelectItem key={c.id} value={c.id}>
+                        {c.label}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setSortConfig(s => ({ ...s, direction: s.direction === 'asc' ? 'desc' : 'asc' }))}
+                  onClick={() =>
+                    setSortConfig((s) => ({
+                      ...s,
+                      direction: s.direction === 'asc' ? 'desc' : 'asc',
+                    }))
+                  }
                 >
-                  {sortConfig.direction === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                  {sortConfig.direction === 'asc' ? (
+                    <ChevronUp className="w-4 h-4" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4" />
+                  )}
                 </Button>
               </div>
             </div>
@@ -349,10 +432,10 @@ export function ProjectComparisonTool({ initialProjectIds = [] }: ProjectCompari
               </div>
             ) : (
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {filteredProjects.map(project => (
-                  <ProjectCard 
-                    key={project.id} 
-                    project={project} 
+                {filteredProjects.map((project) => (
+                  <ProjectCard
+                    key={project.id}
+                    project={project}
                     selected={selectedIds.includes(project.id)}
                     onToggle={() => toggleProject(project.id)}
                     disabled={selectedIds.length >= 5 && !selectedIds.includes(project.id)}
@@ -378,9 +461,14 @@ function Label({ children, className = '' }: { children: React.ReactNode; classN
   return <label className={`text-sm font-medium ${className}`}>{children}</label>;
 }
 
-function ProjectCard({ project, selected, onToggle, disabled }: { 
-  project: ProjectType; 
-  selected: boolean; 
+function ProjectCard({
+  project,
+  selected,
+  onToggle,
+  disabled,
+}: {
+  project: ProjectType;
+  selected: boolean;
   onToggle: () => void;
   disabled?: boolean;
 }) {
@@ -391,7 +479,9 @@ function ProjectCard({ project, selected, onToggle, disabled }: {
   };
 
   return (
-    <Card className={`relative h-full transition-all ${selected ? 'ring-2 ring-primary' : ''} ${disabled ? 'opacity-50' : ''}`}>
+    <Card
+      className={`relative h-full transition-all ${selected ? 'ring-2 ring-primary' : ''} ${disabled ? 'opacity-50' : ''}`}
+    >
       {selected && (
         <div className="absolute top-2 right-2 z-10">
           <span className="bg-primary text-primary-foreground px-2 py-0.5 rounded-full text-xs font-medium">
@@ -412,7 +502,10 @@ function ProjectCard({ project, selected, onToggle, disabled }: {
             type="checkbox"
             checked={selected}
             onChange={() => {}}
-            onClick={(e) => { e.stopPropagation(); toggleProject(project.id); }}
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleProject(project.id);
+            }}
             disabled={disabled && !selected}
             className="mt-1"
           />
@@ -439,9 +532,17 @@ function ProjectCard({ project, selected, onToggle, disabled }: {
         <div className="flex items-center justify-between mt-auto pt-3 border-t">
           <div className="flex items-center gap-2">
             <DollarSign className="w-4 h-4 text-muted-foreground" />
-            <span className="font-semibold text-lg">{formatPrice(project.pricePerTon, project.currency)}/t</span>
+            <span className="font-semibold text-lg">
+              {formatPrice(project.pricePerTon, project.currency)}/t
+            </span>
           </div>
-          <Badge variant={selected ? 'default' : 'outline'} onClick={(e) => { e.stopPropagation(); toggleProject(project.id); }}>
+          <Badge
+            variant={selected ? 'default' : 'outline'}
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleProject(project.id);
+            }}
+          >
             {selected ? <Check className="w-4 h-4" /> : 'Add to Compare'}
           </Badge>
         </div>
@@ -450,9 +551,15 @@ function ProjectCard({ project, selected, onToggle, disabled }: {
   );
 }
 
-function ComparisonTable({ projects, visibleCriteria }: { projects: ProjectType[]; visibleCriteria: string[] }) {
-  const activeCriteria = useMemo(() => 
-    COMPARISON_CRITERIA.filter(c => visibleCriteria.includes(c.id)),
+function ComparisonTable({
+  projects,
+  visibleCriteria,
+}: {
+  projects: ProjectType[];
+  visibleCriteria: string[];
+}) {
+  const activeCriteria = useMemo(
+    () => COMPARISON_CRITERIA.filter((c) => visibleCriteria.includes(c.id)),
     [visibleCriteria]
   );
 
@@ -463,7 +570,7 @@ function ComparisonTable({ projects, visibleCriteria }: { projects: ProjectType[
           <thead className="bg-muted sticky top-0 z-10">
             <tr>
               <th className="px-4 py-3 text-left text-sm font-medium w-48">Criteria</th>
-              {projects.map(p => (
+              {projects.map((p) => (
                 <th key={p.id} className="px-4 py-3 text-center text-sm font-medium w-64">
                   <div className="flex items-center justify-center gap-1">
                     <span className="font-medium">{p.name}</span>
@@ -473,12 +580,12 @@ function ComparisonTable({ projects, visibleCriteria }: { projects: ProjectType[
             </tr>
           </thead>
           <tbody>
-            {activeCriteria.map(criterion => (
+            {activeCriteria.map((criterion) => (
               <tr key={criterion.id} className="border-t">
                 <td className="px-4 py-3 text-sm font-medium sticky left-0 bg-background z-10 w-48">
                   {criterion.label}
                 </td>
-                {projects.map(project => (
+                {projects.map((project) => (
                   <td key={project.id} className="px-4 py-3 text-center text-sm">
                     {renderCell(project, criterion)}
                   </td>
@@ -494,11 +601,13 @@ function ComparisonTable({ projects, visibleCriteria }: { projects: ProjectType[
 
 function renderCell(project: ProjectType, criterion: ComparisonCriteria): React.ReactNode {
   const value = project[criterion.key as keyof ProjectType];
-  
+
   switch (criterion.id) {
     case 'riskRating':
       return (
-        <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${getRiskColor(project.riskRating)}`}>
+        <span
+          className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${getRiskColor(project.riskRating)}`}
+        >
           {getRiskIcon(project.riskRating)}
           {project.riskRating}
         </span>
@@ -506,35 +615,43 @@ function renderCell(project: ProjectType, criterion: ComparisonCriteria): React.
     case 'certification':
       return (
         <div className="flex flex-wrap gap-1 justify-center">
-          {(value as string[]).slice(0, 3).map(cert => (
-            <Badge key={cert} variant="secondary" className="text-xs">{cert}</Badge>
+          {(value as string[]).slice(0, 3).map((cert) => (
+            <Badge key={cert} variant="secondary" className="text-xs">
+              {cert}
+            </Badge>
           ))}
           {(value as string[]).length > 3 && (
-            <Badge variant="outline" className="text-xs">+{(value as string[]).length - 3}</Badge>
+            <Badge variant="outline" className="text-xs">
+              +{(value as string[]).length - 3}
+            </Badge>
           )}
         </div>
       );
     case 'coBenefits':
       return (
         <div className="flex flex-wrap gap-1 justify-center">
-          {(value as any[]).slice(0, 4).map(cb => (
+          {(value as any[]).slice(0, 4).map((cb) => (
             <Tooltip key={cb.category}>
               <TooltipTrigger asChild>
-                <span className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs" style={{ backgroundColor: getCoBenefitColor(cb.category) }}>
+                <span
+                  className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs"
+                  style={{ backgroundColor: getCoBenefitColor(cb.category) }}
+                >
                   {getCoBenefitIcon(cb.category)}
                 </span>
               </TooltipTrigger>
               <TooltipContent>{cb.description}</TooltipContent>
             </Tooltip>
           ))}
-          {(value as any[]).length > 4 && <span className="text-xs text-muted-foreground">+{(value as any[]).length - 4}</span>}
+          {(value as any[]).length > 4 && (
+            <span className="text-xs text-muted-foreground">+{(value as any[]).length - 4}</span>
+          )}
         </div>
       );
     case 'buyerReviews':
       const reviews = value as any[];
-      const avgRating = reviews.length > 0 
-        ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length 
-        : 0;
+      const avgRating =
+        reviews.length > 0 ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length : 0;
       return (
         <div className="flex items-center justify-center gap-1">
           <span className="flex items-center gap-0.5">
@@ -549,7 +666,8 @@ function renderCell(project: ProjectType, criterion: ComparisonCriteria): React.
     case 'availableCredits':
       return (
         <span className="font-medium">
-          {new Intl.NumberFormat().format(project.availableCredits)} / {new Intl.NumberFormat().format(project.totalCredits)}
+          {new Intl.NumberFormat().format(project.availableCredits)} /{' '}
+          {new Intl.NumberFormat().format(project.totalCredits)}
         </span>
       );
     case 'projectType':
@@ -561,19 +679,27 @@ function renderCell(project: ProjectType, criterion: ComparisonCriteria): React.
 
 function getRiskColor(rating: string): string {
   switch (rating) {
-    case 'low': return 'bg-green-100 text-green-800';
-    case 'medium': return 'bg-yellow-100 text-yellow-800';
-    case 'high': return 'bg-red-100 text-red-800';
-    default: return 'bg-gray-100 text-gray-800';
+    case 'low':
+      return 'bg-green-100 text-green-800';
+    case 'medium':
+      return 'bg-yellow-100 text-yellow-800';
+    case 'high':
+      return 'bg-red-100 text-red-800';
+    default:
+      return 'bg-gray-100 text-gray-800';
   }
 }
 
 function getRiskIcon(rating: string): React.ReactNode {
   switch (rating) {
-    case 'low': return <Check className="w-3 h-3 text-green-600" />;
-    case 'medium': return <AlertCircle className="w-3 h-3 text-yellow-600" />;
-    case 'high': return <X className="w-3 h-3 text-red-600" />;
-    default: return <Info className="w-3 h-3" />;
+    case 'low':
+      return <Check className="w-3 h-3 text-green-600" />;
+    case 'medium':
+      return <AlertCircle className="w-3 h-3 text-yellow-600" />;
+    case 'high':
+      return <X className="w-3 h-3 text-red-600" />;
+    default:
+      return <Info className="w-3 h-3" />;
   }
 }
 
@@ -610,7 +736,13 @@ function getCoBenefitIcon(category: string): React.ReactNode {
   return icons[category] || <Info className="w-3 h-3" />;
 }
 
-function ProjectDetailDrawer({ projects, visibleCriteria }: { projects: ProjectType[]; visibleCriteria: string[] }) {
+function ProjectDetailDrawer({
+  projects,
+  visibleCriteria,
+}: {
+  projects: ProjectType[];
+  visibleCriteria: string[];
+}) {
   // Simplified detail drawer - in production would be a slide-over panel
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-background border-t shadow-lg p-4 md:hidden">

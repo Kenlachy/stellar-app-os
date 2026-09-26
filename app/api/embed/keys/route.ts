@@ -6,7 +6,7 @@
  * Issue #1415: Carbon offset API - embed on websites
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import {
@@ -27,9 +27,14 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     const body = await request.json();
-    
+
     // Validate required fields
-    if (!body.name || !body.allowedDomains || !Array.isArray(body.allowedDomains) || body.allowedDomains.length === 0) {
+    if (
+      !body.name ||
+      !body.allowedDomains ||
+      !Array.isArray(body.allowedDomains) ||
+      body.allowedDomains.length === 0
+    ) {
       return NextResponse.json(
         { error: 'Name and allowedDomains (array) are required' },
         { status: 400 }
@@ -51,12 +56,14 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       metadata: body.metadata,
     });
 
-    return NextResponse.json({
-      apiKey: result.apiKey,
-      config: result.config,
-      message: 'API key created successfully. Save the key - it won\'t be shown again.',
-    }, { status: 201 });
-
+    return NextResponse.json(
+      {
+        apiKey: result.apiKey,
+        config: result.config,
+        message: "API key created successfully. Save the key - it won't be shown again.",
+      },
+      { status: 201 }
+    );
   } catch (error) {
     console.error('Create embed API key error:', error);
     return NextResponse.json(
@@ -80,7 +87,6 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     // In production, would fetch from database
     // For now, return empty array
     return NextResponse.json({ keys: [] });
-
   } catch (error) {
     console.error('List embed API keys error:', error);
     return NextResponse.json(

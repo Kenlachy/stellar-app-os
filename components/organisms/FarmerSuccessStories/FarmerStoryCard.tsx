@@ -160,8 +160,8 @@ export function FarmerStoryCard({ story, className }: FarmerStoryCardProps) {
           )}
           {typeof environmentalImpact.soilHealthImprovementPercent === 'number' && (
             <dd className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
-              <Sprout className="h-3.5 w-3.5" aria-hidden="true" />
-              +{environmentalImpact.soilHealthImprovementPercent}% soil health
+              <Sprout className="h-3.5 w-3.5" aria-hidden="true" />+
+              {environmentalImpact.soilHealthImprovementPercent}% soil health
             </dd>
           )}
         </dl>

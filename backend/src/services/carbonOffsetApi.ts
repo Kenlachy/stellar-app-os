@@ -3,7 +3,7 @@
 
 /**
  * Carbon Offset Embeddable API
- * 
+ *
  * Issue #1415: Embeddable API allowing companies to offer carbon offset
  * purchasing directly on their e-commerce or website. White-label solution.
  */
@@ -135,25 +135,23 @@ export async function createEmbedApiKey(data: {
     metadata: data.metadata,
   };
 
-  const { error } = await supabase
-    .from('embed_api_keys')
-    .insert({
-      company_id: data.companyId,
-      name: data.name,
-      key_hash: keyHash,
-      allowed_domains: data.allowedDomains,
-      theme: config.theme,
-      primary_color: config.primaryColor,
-      show_project_selector: config.showProjectSelector,
-      default_project_id: config.defaultProjectId,
-      default_amount: config.defaultAmount,
-      currency: config.currency,
-      locale: config.locale,
-      webhook_url: config.webhookUrl,
-      metadata: config.metadata,
-      active: true,
-      created_at: new Date().toISOString(),
-    });
+  const { error } = await supabase.from('embed_api_keys').insert({
+    company_id: data.companyId,
+    name: data.name,
+    key_hash: keyHash,
+    allowed_domains: data.allowedDomains,
+    theme: config.theme,
+    primary_color: config.primaryColor,
+    show_project_selector: config.showProjectSelector,
+    default_project_id: config.defaultProjectId,
+    default_amount: config.defaultAmount,
+    currency: config.currency,
+    locale: config.locale,
+    webhook_url: config.webhookUrl,
+    metadata: config.metadata,
+    active: true,
+    created_at: new Date().toISOString(),
+  });
 
   if (error) {
     throw new Error(`Failed to create API key: ${error.message}`);
@@ -195,26 +193,24 @@ export async function createOffsetPurchaseSession(
   const checkoutUrl = `${process.env.NEXT_PUBLIC_APP_URL}/embed/checkout/${sessionId}`;
 
   // Store session
-  const { error: sessionError } = await supabase
-    .from('embed_checkout_sessions')
-    .insert({
-      session_id: sessionId,
-      api_key: config.apiKey,
-      company_id: config.companyId,
-      project_id: request.projectId,
-      amount: request.amount,
-      currency: request.currency,
-      price_per_ton: pricePerTon,
-      total_price: totalPrice,
-      customer_email: request.customerEmail,
-      customer_name: request.customerName,
-      metadata: request.metadata,
-      return_url: request.returnUrl,
-      cancel_url: request.cancelUrl,
-      status: 'pending',
-      expires_at: new Date(Date.now() + 30 * 60 * 1000).toISOString(), // 30 min
-      created_at: new Date().toISOString(),
-    });
+  const { error: sessionError } = await supabase.from('embed_checkout_sessions').insert({
+    session_id: sessionId,
+    api_key: config.apiKey,
+    company_id: config.companyId,
+    project_id: request.projectId,
+    amount: request.amount,
+    currency: request.currency,
+    price_per_ton: pricePerTon,
+    total_price: totalPrice,
+    customer_email: request.customerEmail,
+    customer_name: request.customerName,
+    metadata: request.metadata,
+    return_url: request.returnUrl,
+    cancel_url: request.cancelUrl,
+    status: 'pending',
+    expires_at: new Date(Date.now() + 30 * 60 * 1000).toISOString(), // 30 min
+    created_at: new Date().toISOString(),
+  });
 
   if (sessionError) {
     throw new Error(`Failed to create session: ${sessionError.message}`);
@@ -264,7 +260,9 @@ export async function verifyCheckoutSession(sessionId: string): Promise<{
 export async function getEmbeddableProjects(companyId: string): Promise<any[]> {
   const { data, error } = await supabase
     .from('projects')
-    .select('id, name, description, location, country, project_type, price_per_ton, currency, available_credits, risk_rating, images')
+    .select(
+      'id, name, description, location, country, project_type, price_per_ton, currency, available_credits, risk_rating, images'
+    )
     .eq('company_id', companyId)
     .eq('status', 'active')
     .gt('available_credits', 0)
@@ -280,7 +278,7 @@ export async function getEmbeddableProjects(companyId: string): Promise<any[]> {
 export function generateEmbedScript(config: EmbedScriptConfig): string {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
   const scriptUrl = `${baseUrl}/embed.js`;
-  
+
   const params = new URLSearchParams({
     key: config.apiKey,
     mode: config.mode,
@@ -319,7 +317,7 @@ export function generateEmbedScript(config: EmbedScriptConfig): string {
 export function generateEmbedButton(config: EmbedScriptConfig): string {
   const primaryColor = config.primaryColor || '#22c55e';
   const textColor = getContrastColor(primaryColor);
-  
+
   return `
 <!-- Farm-credit Carbon Offset Button -->
 <div id="${config.containerId || 'farm-credit-offset-button'}"></div>
@@ -381,7 +379,7 @@ function hashApiKey(apiKey: string): string {
   let hash = 0;
   for (let i = 0; i < apiKey.length; i++) {
     const char = apiKey.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
+    hash = (hash << 5) - hash + char;
     hash = hash & hash;
   }
   return 'fk_' + Math.abs(hash).toString(36) + '_' + Date.now().toString(36);
@@ -389,14 +387,19 @@ function hashApiKey(apiKey: string): string {
 
 function generateApiKey(): string {
   const prefix = 'fc_live_';
-  const randomPart = Array.from({ length: 32 }, () => 
-    'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'[Math.floor(Math.random() * 62)]
+  const randomPart = Array.from(
+    { length: 32 },
+    () =>
+      'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'[
+        Math.floor(Math.random() * 62)
+      ]
   ).join('');
   return prefix + randomPart;
 }
 
 function generateId(): string {
-  return Array.from({ length: 24 }, () => 
-    'abcdefghijklmnopqrstuvwxyz0123456789'[Math.floor(Math.random() * 36)]
+  return Array.from(
+    { length: 24 },
+    () => 'abcdefghijklmnopqrstuvwxyz0123456789'[Math.floor(Math.random() * 36)]
   ).join('');
 }

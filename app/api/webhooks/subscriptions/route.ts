@@ -36,16 +36,20 @@ export async function POST(request: Request) {
 
     const planterId = Number(body.planterId);
     const url = normalizeUrl(body.url ?? '');
-    const eventTypes = Array.isArray(body.eventTypes) && body.eventTypes.length > 0
-      ? body.eventTypes
-      : TREE_STATUS_EVENTS;
+    const eventTypes =
+      Array.isArray(body.eventTypes) && body.eventTypes.length > 0
+        ? body.eventTypes
+        : TREE_STATUS_EVENTS;
 
     if (!Number.isInteger(planterId) || planterId <= 0) {
       return NextResponse.json({ error: 'A valid planterId is required' }, { status: 400 });
     }
 
     if (!url || !/^https?:\/\//i.test(url)) {
-      return NextResponse.json({ error: 'A valid http(s) callback URL is required' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'A valid http(s) callback URL is required' },
+        { status: 400 }
+      );
     }
 
     const secret = randomBytes(32).toString('hex');

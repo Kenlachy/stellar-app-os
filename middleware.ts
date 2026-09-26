@@ -1,6 +1,6 @@
 import client from 'prom-client';
-import { RequestHandler, Request, Response } from 'express';
-import { NextRequest, NextResponse } from 'next/server';
+import { type RequestHandler, type Request, type Response } from 'express';
+import { type NextRequest, NextResponse } from 'next/server';
 import { MemoryRateLimiter } from '@/lib/rate-limit';
 import { proxy } from './proxy';
 import { handleCorsPreflight, getCorsHeaders } from './lib/cors';
@@ -39,7 +39,9 @@ export const metricsMiddleware: RequestHandler = (req: Request, res: Response, n
     const durationInSeconds = Number(process.hrtime.bigint() - startTime) / 1e9;
     const labels = { method: req.method, route, status: res.statusCode.toString() };
 
-    httpRequestDuration.labels(labels.method, labels.route, labels.status).observe(durationInSeconds);
+    httpRequestDuration
+      .labels(labels.method, labels.route, labels.status)
+      .observe(durationInSeconds);
     httpRequestCounter.labels(labels.method, labels.route, labels.status).inc();
   });
 

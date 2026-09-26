@@ -30,7 +30,12 @@ export interface WeeklySponsorDigestParams {
 }
 
 function escapeHtml(value: string): string {
-  return value.replace(/[&<>'"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[character] ?? character);
+  return value.replace(
+    /[&<>'"]/g,
+    (character) =>
+      ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[character] ??
+      character
+  );
 }
 
 export async function sendSegmentedNewsletter(params: {
@@ -57,8 +62,16 @@ export async function sendSegmentedNewsletter(params: {
 
 export async function sendWeeklySponsorDigest(params: WeeklySponsorDigestParams): Promise<void> {
   if (!isConfigured()) return;
-  const photos = params.photoUrls.filter(Boolean).map((url) => `<img src="${escapeHtml(url)}" alt="Tree progress photo" style="max-width:100%;border-radius:8px;margin:4px 0;"/>`).join('');
-  const highlights = params.communityHighlights.map((highlight) => `<li>${escapeHtml(highlight)}</li>`).join('');
+  const photos = params.photoUrls
+    .filter(Boolean)
+    .map(
+      (url) =>
+        `<img src="${escapeHtml(url)}" alt="Tree progress photo" style="max-width:100%;border-radius:8px;margin:4px 0;"/>`
+    )
+    .join('');
+  const highlights = params.communityHighlights
+    .map((highlight) => `<li>${escapeHtml(highlight)}</li>`)
+    .join('');
   await sgMail.send({
     to: params.sponsorEmail,
     from: FROM,

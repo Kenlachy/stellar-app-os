@@ -106,7 +106,12 @@ const styles = StyleSheet.create({
   tabSelected: { borderTopWidth: 2, borderTopColor: '#14b6e7' },
   tabText: { fontSize: 13, color: '#666' },
   tabTextSelected: { color: '#0d3b1f', fontWeight: '700' },
-  lockScreen: { flex: 1, backgroundColor: '#0d3b1f', alignItems: 'center', justifyContent: 'center' },
+  lockScreen: {
+    flex: 1,
+    backgroundColor: '#0d3b1f',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   lockTitle: { color: '#fff', fontSize: 26, fontWeight: '700' },
   lockSubtitle: { color: '#cfe8d8', fontSize: 15, marginTop: 8, marginBottom: 28 },
   unlockButton: {

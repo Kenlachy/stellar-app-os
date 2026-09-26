@@ -8,11 +8,7 @@
 export type SurveyMethod = 'bioacoustic' | 'drone' | 'manual' | 'camera-trap';
 
 export type RecoveryStatus =
-  | 'baseline'
-  | 'early-recovery'
-  | 'recovering'
-  | 'recovered'
-  | 'degraded';
+  'baseline' | 'early-recovery' | 'recovering' | 'recovered' | 'degraded';
 
 // ── Raw data ingestion ────────────────────────────────────────────────────────
 

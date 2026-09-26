@@ -3,7 +3,10 @@ import { getMockAffiliateProgram } from '@/lib/api/mock/affiliateProgram';
 
 export const runtime = 'nodejs';
 
-const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS ?? '').split(',').map(s => s.trim()).filter(Boolean);
+const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS ?? '')
+  .split(',')
+  .map((s) => s.trim())
+  .filter(Boolean);
 
 function getCorsHeaders(request: Request) {
   const origin = request.headers.get('origin');

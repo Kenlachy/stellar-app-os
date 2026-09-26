@@ -9,7 +9,7 @@
  * This enhances the existing lib/teamChallenges service with proper API routes.
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
@@ -53,14 +53,28 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  let body: { name?: string; description?: string; startDate?: string; endDate?: string; metric?: string; prize?: string; teamIds?: string[] };
+  let body: {
+    name?: string;
+    description?: string;
+    startDate?: string;
+    endDate?: string;
+    metric?: string;
+    prize?: string;
+    teamIds?: string[];
+  };
   try {
     body = await request.json();
   } catch {
     return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
   }
 
-  if (!body.name?.trim() || !body.startDate || !body.endDate || !body.metric || !body.teamIds?.length) {
+  if (
+    !body.name?.trim() ||
+    !body.startDate ||
+    !body.endDate ||
+    !body.metric ||
+    !body.teamIds?.length
+  ) {
     return NextResponse.json(
       { error: 'name, startDate, endDate, metric and teamIds are required' },
       { status: 400 }

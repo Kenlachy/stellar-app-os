@@ -3,14 +3,14 @@
  * Issue #1423
  */
 
-import { 
-  TeamChallengesService, 
-  Team, 
-  TeamMember, 
-  Challenge, 
-  ChallengeTeam, 
-  ChallengeLeaderboardEntry, 
-  ChallengeConfig, 
+import {
+  TeamChallengesService,
+  Team,
+  TeamMember,
+  Challenge,
+  ChallengeTeam,
+  ChallengeLeaderboardEntry,
+  ChallengeConfig,
   ChallengeMetric,
   ChallengeTemplate,
   getMetricLabel,
@@ -69,31 +69,38 @@ describe('TeamChallengesService', () => {
     });
 
     it('should reject challenge with less than 2 teams', async () => {
-      await expect(service.createChallenge({
-        name: 'Test Challenge',
-        description: 'Test',
-        companyId: 'company-1',
-        startDate: '2024-01-01',
-        endDate: '2024-03-31',
-        metric: 'offset_per_employee',
-        teamIds: ['team-1'],
-      })).rejects.toThrow('At least 2 teams required');
+      await expect(
+        service.createChallenge({
+          name: 'Test Challenge',
+          description: 'Test',
+          companyId: 'company-1',
+          startDate: '2024-01-01',
+          endDate: '2024-03-31',
+          metric: 'offset_per_employee',
+          teamIds: ['team-1'],
+        })
+      ).rejects.toThrow('At least 2 teams required');
     });
 
     it('should reject challenge with invalid dates', async () => {
-      await expect(service.createChallenge({
-        name: 'Test Challenge',
-        description: 'Test',
-        companyId: 'company-1',
-        startDate: '2024-03-31',
-        endDate: '2024-01-01',
-        metric: 'offset_per_employee',
-        teamIds: ['team-1', 'team-2'],
-      })).rejects.toThrow('Start date must be before end date');
+      await expect(
+        service.createChallenge({
+          name: 'Test Challenge',
+          description: 'Test',
+          companyId: 'company-1',
+          startDate: '2024-03-31',
+          endDate: '2024-01-01',
+          metric: 'offset_per_employee',
+          teamIds: ['team-1', 'team-2'],
+        })
+      ).rejects.toThrow('Start date must be before end date');
     });
 
     it('should get company challenges', async () => {
-      const challenges = await service.getCompanyChallenges('company-1', { status: ['upcoming', 'active'], limit: 10 });
+      const challenges = await service.getCompanyChallenges('company-1', {
+        status: ['upcoming', 'active'],
+        limit: 10,
+      });
       expect(Array.isArray(challenges)).toBe(true);
     });
 
@@ -137,10 +144,12 @@ describe('TeamChallengesService', () => {
 
   describe('Leaderboard Entry Structure', () => {
     it('should have all required fields', async () => {
-      const result = await new (require('./teamChallenges').TeamChallengesService)().getLeaderboard({
-        metric: 'trees',
-        limit: 1,
-      });
+      const result = await new (require('./teamChallenges').TeamChallengesService)().getLeaderboard(
+        {
+          metric: 'trees',
+          limit: 1,
+        }
+      );
 
       const entry = result.entries[0];
       expect(entry).toHaveProperty('rank');

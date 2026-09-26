@@ -66,14 +66,22 @@ export function OrderSummary({
           <div className="space-y-2 rounded-lg bg-muted/40 p-3 text-sm">
             {species && (
               <div className="flex items-center justify-between gap-3">
-                <Text variant="small" className="text-muted-foreground">Species</Text>
-                <Text variant="small" className="font-medium">{species}</Text>
+                <Text variant="small" className="text-muted-foreground">
+                  Species
+                </Text>
+                <Text variant="small" className="font-medium">
+                  {species}
+                </Text>
               </div>
             )}
             {region && (
               <div className="flex items-center justify-between gap-3">
-                <Text variant="small" className="text-muted-foreground">Planting region</Text>
-                <Text variant="small" className="text-right font-medium">{region}</Text>
+                <Text variant="small" className="text-muted-foreground">
+                  Planting region
+                </Text>
+                <Text variant="small" className="text-right font-medium">
+                  {region}
+                </Text>
               </div>
             )}
           </div>

@@ -24,16 +24,16 @@ export function ThemeSwitcher({
   const handleToggle = (): void => {
     setIsAnimating(true);
     setShowSparkle(true);
-    
+
     // Reset animation state after animation completes
     setTimeout(() => {
       setIsAnimating(false);
     }, 600);
-    
+
     setTimeout(() => {
       setShowSparkle(false);
     }, 400);
-    
+
     toggle();
   };
 
@@ -77,19 +77,19 @@ export function ThemeSwitcher({
         'focus-visible:ring-offset-background',
         'disabled:opacity-50',
         'disabled:cursor-not-allowed',
-        
+
         // Theme-specific glassmorphism
         isDark
           ? 'bg-white/5 hover:bg-white/10 shadow-black/30'
           : 'bg-black/5 hover:bg-black/10 shadow-black/10',
-        
+
         // Size and variant
         sizeClasses[size],
         variantClasses[variant],
-        
+
         // Animation
         isAnimating && 'scale-95',
-        
+
         className
       )}
     >
@@ -108,10 +108,7 @@ export function ThemeSwitcher({
       {showSparkle && (
         <div className="absolute inset-0 flex items-center justify-center">
           <Sparkles
-            className={cn(
-              'absolute text-stellar-blue animate-pulse',
-              iconSize[size]
-            )}
+            className={cn('absolute text-stellar-blue animate-pulse', iconSize[size])}
             style={{
               animation: 'sparkle 0.6s ease-out forwards',
             }}
@@ -146,9 +143,7 @@ export function ThemeSwitcher({
       <div
         className={cn(
           'absolute inset-0 rounded-inherit opacity-0 blur-xl transition-opacity duration-300',
-          isDark
-            ? 'bg-stellar-blue/20 hover:opacity-100'
-            : 'bg-stellar-purple/20 hover:opacity-100'
+          isDark ? 'bg-stellar-blue/20 hover:opacity-100' : 'bg-stellar-purple/20 hover:opacity-100'
         )}
       />
     </button>

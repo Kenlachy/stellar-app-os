@@ -2,12 +2,12 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import {
-  CurrencyCode,
+  type CurrencyCode,
   SUPPORTED_CURRENCIES,
   FALLBACK_EXCHANGE_RATES,
   convertUsdToCurrency,
   formatRegionalCurrency,
-  CurrencyConfig,
+  type CurrencyConfig,
 } from '@/lib/currency/exchange-rates';
 
 interface CurrencyContextType {

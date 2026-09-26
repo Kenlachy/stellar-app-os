@@ -59,7 +59,10 @@ function getClientIp(req: NextRequest): string {
   return ip || 'unknown';
 }
 
-function checkRateLimit(key: string, config: RateLimitConfig): { allowed: boolean; retryAfter: number } {
+function checkRateLimit(
+  key: string,
+  config: RateLimitConfig
+): { allowed: boolean; retryAfter: number } {
   const now = Date.now();
   let entry = rateLimitStore.get(key);
   if (!entry) {
@@ -73,7 +76,7 @@ function checkRateLimit(key: string, config: RateLimitConfig): { allowed: boolea
   }
 
   // Remove timestamps outside the sliding window
-  entry.timestamps = entry.timestamps.filter(ts => ts > now - config.windowMs);
+  entry.timestamps = entry.timestamps.filter((ts) => ts > now - config.windowMs);
 
   // Check if over limit
   if (entry.timestamps.length >= config.maxRequests) {

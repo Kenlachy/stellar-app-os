@@ -6,11 +6,11 @@
  * Issue #1415: Carbon offset API - embed on websites
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
 import {
   validateApiKey,
   createOffsetPurchaseSession,
-  OffsetPurchaseRequest,
+  type OffsetPurchaseRequest,
   EmbedConfig,
 } from '@/backend/src/services/carbonOffsetApi';
 
@@ -34,10 +34,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const config = await validateApiKey(apiKey);
 
     if (!config) {
-      return NextResponse.json(
-        { error: 'Invalid or inactive API key' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Invalid or inactive API key' }, { status: 401 });
     }
 
     const body = await request.json();
@@ -46,10 +43,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const requiredFields = ['projectId', 'amount', 'currency', 'customerEmail'];
     for (const field of requiredFields) {
       if (!body[field]) {
-        return NextResponse.json(
-          { error: `Missing required field: ${field}` },
-          { status: 400 }
-        );
+        return NextResponse.json({ error: `Missing required field: ${field}` }, { status: 400 });
       }
     }
 
@@ -67,7 +61,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const response = await createOffsetPurchaseSession(config as any, purchaseRequest);
 
     return NextResponse.json(response, { status: 201 });
-
   } catch (error) {
     console.error('Create purchase session error:', error);
     return NextResponse.json(

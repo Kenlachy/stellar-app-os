@@ -27,10 +27,7 @@ export async function POST(request: Request) {
     const { photoIds, action, reason, resolveConflicts = 'keep_newest' } = body;
 
     if (!photoIds || photoIds.length === 0) {
-      return NextResponse.json(
-        { error: 'No photo IDs provided' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'No photo IDs provided' }, { status: 400 });
     }
 
     if (!['approve', 'reject'].includes(action)) {
@@ -70,10 +67,7 @@ export async function POST(request: Request) {
 
       if (photos.length === 0) {
         await client.query('ROLLBACK');
-        return NextResponse.json(
-          { error: 'No valid photos found' },
-          { status: 404 }
-        );
+        return NextResponse.json({ error: 'No valid photos found' }, { status: 404 });
       }
 
       // Check for conflicts
@@ -94,7 +88,7 @@ export async function POST(request: Request) {
         if (treePhotos.length > 1) {
           // Multiple photos for same tree - apply conflict resolution
           let selectedPhoto;
-          
+
           if (resolveConflicts === 'keep_newest') {
             selectedPhoto = treePhotos[0]; // Already sorted by created_at DESC
           } else if (resolveConflicts === 'keep_oldest') {
@@ -111,9 +105,9 @@ export async function POST(request: Request) {
           }
 
           photosToProcess.push(selectedPhoto.id);
-          
+
           // Mark others as conflicted
-          const rejectedPhotos = treePhotos.filter(p => p.id !== selectedPhoto.id);
+          const rejectedPhotos = treePhotos.filter((p) => p.id !== selectedPhoto.id);
           for (const photo of rejectedPhotos) {
             conflicts.push({
               photoId: photo.id,
@@ -147,7 +141,7 @@ export async function POST(request: Request) {
           WHERE id = ANY($1::bigint[])
         `;
         const treeIdsResult = await client.query(treeIdsQuery, [photosToProcess]);
-        const treeIds = treeIdsResult.rows.map(r => r.tree_id);
+        const treeIds = treeIdsResult.rows.map((r) => r.tree_id);
 
         // Update tree status to verified
         const updateTreesQuery = `
@@ -188,7 +182,7 @@ export async function POST(request: Request) {
             [
               tree.id,
               `admin-batch-${Date.now()}-${tree.id}`,
-              JSON.stringify({ 
+              JSON.stringify({
                 reason: reason || 'Batch approval',
                 processedPhotos: photosToProcess.length,
                 conflicts: conflicts.length,
@@ -212,10 +206,7 @@ export async function POST(request: Request) {
           SET metadata = metadata || $1::jsonb
           WHERE id = ANY($2::bigint[])
         `;
-        await client.query(updateRejectedQuery, [
-          JSON.stringify(rejectionMetadata),
-          photoIds,
-        ]);
+        await client.query(updateRejectedQuery, [JSON.stringify(rejectionMetadata), photoIds]);
       }
 
       await client.query('COMMIT');
@@ -227,19 +218,14 @@ export async function POST(request: Request) {
         action,
         message: `Successfully ${action}ed ${photosToProcess.length} photo(s)`,
       });
-
     } catch (error) {
       await client.query('ROLLBACK');
       throw error;
     } finally {
       client.release();
     }
-
   } catch (error) {
     console.error('Error processing batch action:', error);
-    return NextResponse.json(
-      { error: 'Failed to process batch action' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to process batch action' }, { status: 500 });
   }
 }

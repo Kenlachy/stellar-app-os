@@ -1,6 +1,6 @@
 /**
  * CDN URL utilities for global edge delivery
- * 
+ *
  * All photos, map tiles, and static assets are served through CloudFront
  * with edge locations ensuring <100ms TTFB globally.
  */
@@ -18,7 +18,7 @@ export interface ImageOptimizationOptions {
 /**
  * Get CDN URL for a photo stored in S3
  * Falls back to signed S3 URL if CDN is not configured
- * 
+ *
  * @param s3Key - S3 object key (e.g., "planting-photos/farmer123/timestamp.jpg")
  * @param options - Optional image optimization parameters
  * @returns CDN URL with edge caching
@@ -44,7 +44,7 @@ export function getCdnPhotoUrl(s3Key: string, options?: ImageOptimizationOptions
 
 /**
  * Get CDN URL for map tiles API endpoint
- * 
+ *
  * @param region - Optional region filter
  * @param zoom - Optional zoom level
  * @param bbox - Optional bounding box
@@ -69,7 +69,7 @@ export function getCdnMapTilesUrl(params?: {
 
 /**
  * Get CDN URL for static assets
- * 
+ *
  * @param assetPath - Path to static asset (e.g., "assets/logo.svg", "icons/icon-192x192.png")
  * @returns CDN URL with aggressive edge caching
  */
@@ -98,7 +98,7 @@ export function getDistributionId(): string | undefined {
 
 /**
  * Generate responsive image srcset for CDN delivery
- * 
+ *
  * @param s3Key - S3 object key
  * @param widths - Array of widths for responsive images
  * @param format - Image format (default: webp)
@@ -119,13 +119,11 @@ export function getCdnImageSrcSet(
 
 /**
  * Get cache headers for CDN-compatible responses
- * 
+ *
  * @param type - Content type (photo, map, static)
  * @returns Cache-Control header value
  */
-export function getCdnCacheHeaders(
-  type: 'photo' | 'map' | 'static'
-): Record<string, string> {
+export function getCdnCacheHeaders(type: 'photo' | 'map' | 'static'): Record<string, string> {
   const headers: Record<string, string> = {};
 
   switch (type) {
@@ -153,9 +151,9 @@ export function getCdnCacheHeaders(
 
 /**
  * Invalidate CDN cache for specific paths
- * 
+ *
  * This is a server-side only function
- * 
+ *
  * @param paths - Array of paths to invalidate
  * @returns Invalidation ID or null if CDN not configured
  */
@@ -168,9 +166,8 @@ export async function invalidateCdnCache(paths: string[]): Promise<string | null
   // This requires AWS SDK on server-side
   // Import dynamically to avoid client-side bundle
   try {
-    const { CloudFrontClient, CreateInvalidationCommand } = await import(
-      '@aws-sdk/client-cloudfront'
-    );
+    const { CloudFrontClient, CreateInvalidationCommand } =
+      await import('@aws-sdk/client-cloudfront');
 
     const client = new CloudFrontClient({
       region: 'us-east-1',

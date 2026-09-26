@@ -6,7 +6,7 @@
  * Issue #1415: Carbon offset API - embed on websites
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { getEmbeddableProjects } from '@/backend/src/services/carbonOffsetApi';
@@ -26,7 +26,6 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const projects = await getEmbeddableProjects(session.user.companyId);
 
     return NextResponse.json({ projects });
-
   } catch (error) {
     console.error('List embeddable projects error:', error);
     return NextResponse.json(

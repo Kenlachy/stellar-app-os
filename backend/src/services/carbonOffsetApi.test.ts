@@ -7,10 +7,10 @@
  */
 
 import {
-  EmbedConfig,
-  OffsetPurchaseRequest,
-  OffsetPurchaseResponse,
-  EmbedScriptConfig,
+  type EmbedConfig,
+  type OffsetPurchaseRequest,
+  type OffsetPurchaseResponse,
+  type EmbedScriptConfig,
 } from './carbonOffsetApi';
 
 describe('Carbon Offset Embeddable API Types', () => {
@@ -57,7 +57,7 @@ describe('Carbon Offset Embeddable API Types', () => {
       currency: 'USD',
       projectId: 'proj-1',
       projectName: 'Amazon Reforestation',
-      pricePerTon: 15.50,
+      pricePerTon: 15.5,
       totalPrice: 38.75,
     };
     expect(response.sessionId).toContain('cs_');

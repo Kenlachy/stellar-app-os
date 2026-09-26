@@ -32,17 +32,16 @@ export async function registerForPushNotifications(): Promise<string | null> {
  * Schedule a local notification (e.g. when a sponsorship is queued offline
  * and will sync later, or when growth milestones are fetched).
  */
-export async function notify(
-  title: string,
-  body: string,
-  secondsFromNow = 1
-): Promise<void> {
+export async function notify(title: string, body: string, secondsFromNow = 1): Promise<void> {
   await Notifications.scheduleNotificationAsync({
     content: {
       title,
       body,
       sound: 'default',
     },
-    trigger: { seconds: secondsFromNow, type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL },
+    trigger: {
+      seconds: secondsFromNow,
+      type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+    },
   });
 }

@@ -7,10 +7,10 @@
  */
 
 import {
-  Team,
-  TeamMember,
-  TeamChallenge,
-  ChallengeLeaderboardEntry,
+  type Team,
+  type TeamMember,
+  type TeamChallenge,
+  type ChallengeLeaderboardEntry,
 } from './teamChallenges';
 
 describe('Team Challenges Types', () => {

@@ -6,11 +6,11 @@
  * Issue #1416
  */
 
-import { 
-  Project, 
-  CoBenefit, 
-  BuyerReview, 
-  ComparisonCriteria, 
+import {
+  type Project,
+  type CoBenefit,
+  type BuyerReview,
+  ComparisonCriteria,
   COMPARISON_CRITERIA,
   getRiskColor,
   getRiskIcon,
@@ -30,20 +30,42 @@ describe('Project Comparison Types', () => {
     methodology: 'VM0001',
     verifier: 'Verra',
     certification: ['VCS', 'CCB'],
-    pricePerTon: 15.50,
+    pricePerTon: 15.5,
     currency: 'USD',
     vintage: '2023',
     totalCredits: 100000,
     availableCredits: 50000,
     riskRating: 'low',
     coBenefits: [
-      { category: 'biodiversity', description: 'Protects endangered species habitat', verified: true },
+      {
+        category: 'biodiversity',
+        description: 'Protects endangered species habitat',
+        verified: true,
+      },
       { category: 'community', description: 'Employs 200 local workers', verified: true },
     ],
     images: ['image1.jpg'],
     buyerReviews: [
-      { id: 'rev-1', projectId: 'proj-1', buyerName: 'Green Corp', rating: 5, title: 'Excellent', content: 'Great project', verified: true, createdAt: '2024-01-01' },
-      { id: 'rev-2', projectId: 'proj-1', buyerName: 'Eco Inc', rating: 4, title: 'Good', content: 'Solid project', verified: true, createdAt: '2024-02-01' },
+      {
+        id: 'rev-1',
+        projectId: 'proj-1',
+        buyerName: 'Green Corp',
+        rating: 5,
+        title: 'Excellent',
+        content: 'Great project',
+        verified: true,
+        createdAt: '2024-01-01',
+      },
+      {
+        id: 'rev-2',
+        projectId: 'proj-1',
+        buyerName: 'Eco Inc',
+        rating: 4,
+        title: 'Good',
+        content: 'Solid project',
+        verified: true,
+        createdAt: '2024-02-01',
+      },
     ],
     createdAt: '2024-01-01T00:00:00Z',
     updatedAt: '2024-01-01T00:00:00Z',
@@ -51,7 +73,7 @@ describe('Project Comparison Types', () => {
 
   it('should have valid Project interface', () => {
     expect(sampleProject.name).toBe('Amazon Reforestation');
-    expect(sampleProject.pricePerTon).toBe(15.50);
+    expect(sampleProject.pricePerTon).toBe(15.5);
     expect(sampleProject.riskRating).toBe('low');
   });
 
@@ -80,9 +102,9 @@ describe('Project Comparison Types', () => {
 
   it('should have comparison criteria defined', () => {
     expect(COMPARISON_CRITERIA.length).toBeGreaterThan(10);
-    expect(COMPARISON_CRITERIA.some(c => c.id === 'pricePerTon')).toBe(true);
-    expect(COMPARISON_CRITERIA.some(c => c.id === 'riskRating')).toBe(true);
-    expect(COMPARISON_CRITERIA.some(c => c.id === 'coBenefits')).toBe(true);
+    expect(COMPARISON_CRITERIA.some((c) => c.id === 'pricePerTon')).toBe(true);
+    expect(COMPARISON_CRITERIA.some((c) => c.id === 'riskRating')).toBe(true);
+    expect(COMPARISON_CRITERIA.some((c) => c.id === 'coBenefits')).toBe(true);
   });
 
   it('should return correct risk colors', () => {
@@ -92,14 +114,32 @@ describe('Project Comparison Types', () => {
   });
 
   it('should format price correctly', () => {
-    expect(formatPrice(15.50, 'USD')).toContain('$15.50');
+    expect(formatPrice(15.5, 'USD')).toContain('$15.50');
     expect(formatPrice(100, 'EUR')).toContain('€');
   });
 
   it('should calculate average rating', () => {
     const reviews: BuyerReview[] = [
-      { id: '1', projectId: 'p1', buyerName: 'A', rating: 5, title: '', content: '', verified: true, createdAt: '' },
-      { id: '2', projectId: 'p1', buyerName: 'B', rating: 3, title: '', content: '', verified: true, createdAt: '' },
+      {
+        id: '1',
+        projectId: 'p1',
+        buyerName: 'A',
+        rating: 5,
+        title: '',
+        content: '',
+        verified: true,
+        createdAt: '',
+      },
+      {
+        id: '2',
+        projectId: 'p1',
+        buyerName: 'B',
+        rating: 3,
+        title: '',
+        content: '',
+        verified: true,
+        createdAt: '',
+      },
     ];
     expect(getAverageRating(reviews)).toBe(4);
     expect(getAverageRating([])).toBe(0);

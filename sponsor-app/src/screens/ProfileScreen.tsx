@@ -76,7 +76,9 @@ export function ProfileScreen() {
             onValueChange={(value) => void handlePushToggle(value)}
           />
         </View>
-        <Text style={styles.meta}>Get notified when your sponsored trees hit growth milestones.</Text>
+        <Text style={styles.meta}>
+          Get notified when your sponsored trees hit growth milestones.
+        </Text>
       </View>
     </View>
   );

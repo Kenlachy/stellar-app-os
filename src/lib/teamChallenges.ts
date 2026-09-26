@@ -3,8 +3,8 @@
 
 /**
  * Corporate Offset Goals - Team Challenges
- * 
- * Issue #1423: Gamified feature allowing employee teams to compete on 
+ *
+ * Issue #1423: Gamified feature allowing employee teams to compete on
  * sustainability goals. Team with best offset-per-employee ratio wins recognition.
  */
 
@@ -103,13 +103,15 @@ export async function createTeam(data: {
 export async function getCompanyTeams(companyId: string): Promise<Team[]> {
   const { data, error } = await supabase
     .from('teams')
-    .select(`
+    .select(
+      `
       *,
       members:team_members(
         *,
         user:users(name, email, avatar_url)
       )
-    `)
+    `
+    )
     .eq('company_id', companyId)
     .order('created_at', { ascending: false });
 
@@ -182,13 +184,15 @@ export async function createChallenge(data: {
 export async function getCompanyChallenges(companyId: string): Promise<TeamChallenge[]> {
   const { data, error } = await supabase
     .from('team_challenges')
-    .select(`
+    .select(
+      `
       *,
       teams:challenge_teams(
         team_id,
         team:teams(name)
       )
-    `)
+    `
+    )
     .eq('company_id', companyId)
     .in('status', ['upcoming', 'active'])
     .order('start_date', { ascending: true });
@@ -200,7 +204,9 @@ export async function getCompanyChallenges(companyId: string): Promise<TeamChall
 /**
  * Get challenge leaderboard
  */
-export async function getChallengeLeaderboard(challengeId: string): Promise<ChallengeLeaderboardEntry[]> {
+export async function getChallengeLeaderboard(
+  challengeId: string
+): Promise<ChallengeLeaderboardEntry[]> {
   const { data, error } = await supabase
     .from('challenge_leaderboard')
     .select('*')
@@ -222,7 +228,7 @@ export async function calculateTeamScores(challengeId: string): Promise<void> {
   // 3. Calculate the metric (offset_per_employee, total_trees, etc.)
   // 4. Update challenge_teams table
   // 5. Recompute rankings
-  
+
   // Simulated implementation:
   const { data: teams } = await supabase
     .from('challenge_teams')
@@ -234,11 +240,8 @@ export async function calculateTeamScores(challengeId: string): Promise<void> {
   for (const team of teams) {
     // Simulate score calculation
     const score = Math.random() * 1000;
-    
-    await supabase
-      .from('challenge_teams')
-      .update({ score })
-      .eq('id', team.id);
+
+    await supabase.from('challenge_teams').update({ score }).eq('id', team.id);
   }
 
   // Update leaderboard view
@@ -251,7 +254,8 @@ export async function calculateTeamScores(challengeId: string): Promise<void> {
 export async function getUserTeams(userId: string): Promise<Team[]> {
   const { data, error } = await supabase
     .from('team_members')
-    .select(`
+    .select(
+      `
       team:teams(
         *,
         members:team_members(
@@ -259,11 +263,12 @@ export async function getUserTeams(userId: string): Promise<Team[]> {
           user:users(name, email, avatar_url)
         )
       )
-    `)
+    `
+    )
     .eq('user_id', userId);
 
   if (error) throw new Error(`Failed to fetch user teams: ${error.message}`);
-  return data?.map(d => d.team).filter(Boolean) as Team[];
+  return data?.map((d) => d.team).filter(Boolean) as Team[];
 }
 
 /**

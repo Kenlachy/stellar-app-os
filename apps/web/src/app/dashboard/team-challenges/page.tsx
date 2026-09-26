@@ -4,7 +4,7 @@
  */
 
 import { TeamChallengesDashboard } from '@/components/modules/team-challenges/TeamChallengesDashboard';
-import { Metadata } from 'next';
+import { type Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 
 export default async function TeamChallengesPage() {
   const session = await getServerSession(authOptions);
-  
+
   if (!session?.user?.companyId) {
     return (
       <div className="flex items-center justify-center h-[60vh]">

@@ -14,9 +14,9 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Trophy, Users, Target, TrendingUp, Calendar } from 'lucide-react';
 import {
-  Team,
-  TeamChallenge,
-  ChallengeLeaderboardEntry,
+  type Team,
+  type TeamChallenge,
+  type ChallengeLeaderboardEntry,
   createTeam,
   getCompanyTeams,
   joinTeam,
@@ -62,7 +62,7 @@ export function TeamChallengesDashboard({ companyId }: TeamChallengesDashboardPr
   const handleCreateTeam = async (name: string, description: string) => {
     try {
       const team = await createTeam({ name, description, companyId });
-      setTeams(prev => [team, ...prev]);
+      setTeams((prev) => [team, ...prev]);
       setShowCreateTeam(false);
     } catch (error) {
       console.error('Failed to create team:', error);
@@ -79,7 +79,7 @@ export function TeamChallengesDashboard({ companyId }: TeamChallengesDashboardPr
   }) => {
     try {
       const challenge = await createChallenge({ ...data, companyId });
-      setChallenges(prev => [challenge, ...prev]);
+      setChallenges((prev) => [challenge, ...prev]);
       setShowCreateChallenge(false);
     } catch (error) {
       console.error('Failed to create challenge:', error);
@@ -110,9 +110,7 @@ export function TeamChallengesDashboard({ companyId }: TeamChallengesDashboardPr
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Team Challenges</h1>
-          <p className="text-muted-foreground">
-            Compete with colleagues on sustainability goals
-          </p>
+          <p className="text-muted-foreground">Compete with colleagues on sustainability goals</p>
         </div>
         <div className="flex gap-2">
           <Button onClick={() => setShowCreateTeam(true)}>
@@ -132,7 +130,7 @@ export function TeamChallengesDashboard({ companyId }: TeamChallengesDashboardPr
           { id: 'teams', label: 'Teams', count: teams.length },
           { id: 'challenges', label: 'Challenges', count: challenges.length },
           { id: 'leaderboard', label: 'Leaderboard' },
-        ].map(tab => (
+        ].map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id as any)}
@@ -144,9 +142,7 @@ export function TeamChallengesDashboard({ companyId }: TeamChallengesDashboardPr
           >
             {tab.label}
             {tab.count !== undefined && (
-              <span className="ml-2 px-2 py-0.5 text-xs bg-muted rounded-full">
-                {tab.count}
-              </span>
+              <span className="ml-2 px-2 py-0.5 text-xs bg-muted rounded-full">{tab.count}</span>
             )}
           </button>
         ))}
@@ -159,22 +155,31 @@ export function TeamChallengesDashboard({ companyId }: TeamChallengesDashboardPr
       {activeTab === 'challenges' && (
         <ChallengesTab challenges={challenges} companyId={companyId} />
       )}
-      {activeTab === 'leaderboard' && (
-        <LeaderboardTab challenges={challenges} />
-      )}
+      {activeTab === 'leaderboard' && <LeaderboardTab challenges={challenges} />}
 
       {/* Modals */}
       {showCreateTeam && (
         <CreateTeamModal onClose={() => setShowCreateTeam(false)} onSubmit={handleCreateTeam} />
       )}
       {showCreateChallenge && (
-        <CreateChallengeModal onClose={() => setShowCreateChallenge(false)} onSubmit={handleCreateChallenge} />
+        <CreateChallengeModal
+          onClose={() => setShowCreateChallenge(false)}
+          onSubmit={handleCreateChallenge}
+        />
       )}
     </div>
   );
 }
 
-function TeamsTab({ teams, onJoin, userId }: { teams: Team[]; onJoin: (id: string) => void; userId?: string }) {
+function TeamsTab({
+  teams,
+  onJoin,
+  userId,
+}: {
+  teams: Team[];
+  onJoin: (id: string) => void;
+  userId?: string;
+}) {
   if (teams.length === 0) {
     return (
       <div className="text-center py-12">
@@ -187,8 +192,8 @@ function TeamsTab({ teams, onJoin, userId }: { teams: Team[]; onJoin: (id: strin
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {teams.map(team => {
-        const isMember = team.members.some(m => m.userId === userId);
+      {teams.map((team) => {
+        const isMember = team.members.some((m) => m.userId === userId);
         return (
           <TeamCard key={team.id} team={team} isMember={isMember} onJoin={() => onJoin(team.id)} />
         );
@@ -197,15 +202,21 @@ function TeamsTab({ teams, onJoin, userId }: { teams: Team[]; onJoin: (id: strin
   );
 }
 
-function TeamCard({ team, isMember, onJoin }: { team: Team; isMember: boolean; onJoin: () => void }) {
+function TeamCard({
+  team,
+  isMember,
+  onJoin,
+}: {
+  team: Team;
+  isMember: boolean;
+  onJoin: () => void;
+}) {
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           {team.name}
-          <Badge variant={isMember ? 'default' : 'outline'}>
-            {isMember ? 'Member' : 'Join'}
-          </Badge>
+          <Badge variant={isMember ? 'default' : 'outline'}>{isMember ? 'Member' : 'Join'}</Badge>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
@@ -223,7 +234,13 @@ function TeamCard({ team, isMember, onJoin }: { team: Team; isMember: boolean; o
   );
 }
 
-function ChallengesTab({ challenges, companyId }: { challenges: TeamChallenge[]; companyId: string }) {
+function ChallengesTab({
+  challenges,
+  companyId,
+}: {
+  challenges: TeamChallenge[];
+  companyId: string;
+}) {
   if (challenges.length === 0) {
     return (
       <div className="text-center py-12">
@@ -236,7 +253,7 @@ function ChallengesTab({ challenges, companyId }: { challenges: TeamChallenge[];
 
   return (
     <div className="space-y-4">
-      {challenges.map(challenge => (
+      {challenges.map((challenge) => (
         <ChallengeCard key={challenge.id} challenge={challenge} companyId={companyId} />
       ))}
     </div>
@@ -250,9 +267,10 @@ function ChallengeCard({ challenge, companyId }: { challenge: TeamChallenge; com
     completed: 'bg-gray-100 text-gray-800',
   };
 
-  const daysLeft = challenge.status === 'active'
-    ? Math.ceil((new Date(challenge.endDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
-    : null;
+  const daysLeft =
+    challenge.status === 'active'
+      ? Math.ceil((new Date(challenge.endDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+      : null;
 
   return (
     <Card>
@@ -261,15 +279,14 @@ function ChallengeCard({ challenge, companyId }: { challenge: TeamChallenge; com
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2">
               <h3 className="font-semibold">{challenge.name}</h3>
-              <Badge className={statusColors[challenge.status]}>
-                {challenge.status}
-              </Badge>
+              <Badge className={statusColors[challenge.status]}>{challenge.status}</Badge>
             </div>
             <p className="text-sm text-muted-foreground mb-3">{challenge.description}</p>
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
               <span className="flex items-center gap-1">
                 <Calendar className="w-3 h-3" />
-                {new Date(challenge.startDate).toLocaleDateString()} - {new Date(challenge.endDate).toLocaleDateString()}
+                {new Date(challenge.startDate).toLocaleDateString()} -{' '}
+                {new Date(challenge.endDate).toLocaleDateString()}
               </span>
               {daysLeft !== null && (
                 <span className="flex items-center gap-1 text-orange-600">
@@ -293,7 +310,9 @@ function ChallengeCard({ challenge, companyId }: { challenge: TeamChallenge; com
 }
 
 function LeaderboardTab({ challenges }: { challenges: TeamChallenge[] }) {
-  const [selectedChallenge, setSelectedChallenge] = useState<TeamChallenge | null>(challenges[0] || null);
+  const [selectedChallenge, setSelectedChallenge] = useState<TeamChallenge | null>(
+    challenges[0] || null
+  );
   const [leaderboard, setLeaderboard] = useState<ChallengeLeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -330,11 +349,15 @@ function LeaderboardTab({ challenges }: { challenges: TeamChallenge[] }) {
         <label className="text-sm font-medium">Select Challenge:</label>
         <select
           value={selectedChallenge?.id || ''}
-          onChange={e => setSelectedChallenge(challenges.find(c => c.id === e.target.value) || null)}
+          onChange={(e) =>
+            setSelectedChallenge(challenges.find((c) => c.id === e.target.value) || null)
+          }
           className="flex-1 max-w-xs px-3 py-2 border rounded-md"
         >
-          {challenges.map(c => (
-            <option key={c.id} value={c.id}>{c.name} ({c.status})</option>
+          {challenges.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.name} ({c.status})
+            </option>
           ))}
         </select>
       </div>
@@ -370,7 +393,9 @@ function LeaderboardTab({ challenges }: { challenges: TeamChallenge[] }) {
                   <td className="px-4 py-3">{entry.totalOffset.toFixed(1)}t</td>
                   <td className="px-4 py-3">{entry.treesPlanted}</td>
                   <td className="px-4 py-3">
-                    {entry.trend === 'up' && <TrendingUp className="w-4 h-4 text-green-500 mx-auto" />}
+                    {entry.trend === 'up' && (
+                      <TrendingUp className="w-4 h-4 text-green-500 mx-auto" />
+                    )}
                     {entry.trend === 'down' && <span className="text-red-500">↓</span>}
                     {entry.trend === 'same' && <span className="text-gray-400">→</span>}
                   </td>
@@ -384,7 +409,13 @@ function LeaderboardTab({ challenges }: { challenges: TeamChallenge[] }) {
   );
 }
 
-function CreateTeamModal({ onClose, onSubmit }: { onClose: () => void; onSubmit: (name: string, description: string) => void }) {
+function CreateTeamModal({
+  onClose,
+  onSubmit,
+}: {
+  onClose: () => void;
+  onSubmit: (name: string, description: string) => void;
+}) {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
 
@@ -398,7 +429,7 @@ function CreateTeamModal({ onClose, onSubmit }: { onClose: () => void; onSubmit:
             <input
               type="text"
               value={name}
-              onChange={e => setName(e.target.value)}
+              onChange={(e) => setName(e.target.value)}
               className="w-full px-3 py-2 border rounded-md"
               placeholder="e.g., Green Warriors"
             />
@@ -407,7 +438,7 @@ function CreateTeamModal({ onClose, onSubmit }: { onClose: () => void; onSubmit:
             <label className="block text-sm font-medium mb-1">Description (optional)</label>
             <textarea
               value={description}
-              onChange={e => setDescription(e.target.value)}
+              onChange={(e) => setDescription(e.target.value)}
               className="w-full px-3 py-2 border rounded-md"
               rows={3}
               placeholder="Team mission, goals, etc."
@@ -415,8 +446,16 @@ function CreateTeamModal({ onClose, onSubmit }: { onClose: () => void; onSubmit:
           </div>
         </div>
         <div className="flex justify-end gap-2 mt-6">
-          <Button variant="outline" onClick={onClose}>Cancel</Button>
-          <Button onClick={() => { onSubmit(name, description); onClose(); }} disabled={!name}>
+          <Button variant="outline" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button
+            onClick={() => {
+              onSubmit(name, description);
+              onClose();
+            }}
+            disabled={!name}
+          >
             Create Team
           </Button>
         </div>
@@ -425,7 +464,13 @@ function CreateTeamModal({ onClose, onSubmit }: { onClose: () => void; onSubmit:
   );
 }
 
-function CreateChallengeModal({ onClose, onSubmit }: { onClose: () => void; onSubmit: (data: any) => void }) {
+function CreateChallengeModal({
+  onClose,
+  onSubmit,
+}: {
+  onClose: () => void;
+  onSubmit: (data: any) => void;
+}) {
   const [form, setForm] = useState({
     name: '',
     description: '',
@@ -445,7 +490,7 @@ function CreateChallengeModal({ onClose, onSubmit }: { onClose: () => void; onSu
             <input
               type="text"
               value={form.name}
-              onChange={e => setForm({ ...form, name: e.target.value })}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
               className="w-full px-3 py-2 border rounded-md"
               placeholder="e.g., Q1 Sustainability Sprint"
             />
@@ -454,7 +499,7 @@ function CreateChallengeModal({ onClose, onSubmit }: { onClose: () => void; onSu
             <label className="block text-sm font-medium mb-1">Description</label>
             <textarea
               value={form.description}
-              onChange={e => setForm({ ...form, description: e.target.value })}
+              onChange={(e) => setForm({ ...form, description: e.target.value })}
               className="w-full px-3 py-2 border rounded-md"
               rows={3}
             />
@@ -465,7 +510,7 @@ function CreateChallengeModal({ onClose, onSubmit }: { onClose: () => void; onSu
               <input
                 type="date"
                 value={form.startDate}
-                onChange={e => setForm({ ...form, startDate: e.target.value })}
+                onChange={(e) => setForm({ ...form, startDate: e.target.value })}
                 className="w-full px-3 py-2 border rounded-md"
               />
             </div>
@@ -474,7 +519,7 @@ function CreateChallengeModal({ onClose, onSubmit }: { onClose: () => void; onSu
               <input
                 type="date"
                 value={form.endDate}
-                onChange={e => setForm({ ...form, endDate: e.target.value })}
+                onChange={(e) => setForm({ ...form, endDate: e.target.value })}
                 className="w-full px-3 py-2 border rounded-md"
               />
             </div>
@@ -483,7 +528,7 @@ function CreateChallengeModal({ onClose, onSubmit }: { onClose: () => void; onSu
             <label className="block text-sm font-medium mb-1">Metric</label>
             <select
               value={form.metric}
-              onChange={e => setForm({ ...form, metric: e.target.value as any })}
+              onChange={(e) => setForm({ ...form, metric: e.target.value as any })}
               className="w-full px-3 py-2 border rounded-md"
             >
               <option value="offset_per_employee">Offset per Employee</option>
@@ -497,15 +542,23 @@ function CreateChallengeModal({ onClose, onSubmit }: { onClose: () => void; onSu
             <input
               type="text"
               value={form.prize}
-              onChange={e => setForm({ ...form, prize: e.target.value })}
+              onChange={(e) => setForm({ ...form, prize: e.target.value })}
               className="w-full px-3 py-2 border rounded-md"
               placeholder="e.g., Team lunch, extra PTO, donation match"
             />
           </div>
         </div>
         <div className="flex justify-end gap-2 mt-6">
-          <Button variant="outline" onClick={onClose}>Cancel</Button>
-          <Button onClick={() => { onSubmit(form); onClose(); }} disabled={!form.name}>
+          <Button variant="outline" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button
+            onClick={() => {
+              onSubmit(form);
+              onClose();
+            }}
+            disabled={!form.name}
+          >
             Create Challenge
           </Button>
         </div>

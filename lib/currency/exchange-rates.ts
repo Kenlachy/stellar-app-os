@@ -26,7 +26,7 @@ export const FALLBACK_EXCHANGE_RATES: Record<CurrencyCode, number> = {
   EUR: 0.92,
   GBP: 0.79,
   INR: 83.45,
-  JPY: 155.20,
+  JPY: 155.2,
   CNY: 7.23,
   AED: 3.67,
 };
@@ -89,10 +89,7 @@ export function convertUsdToCurrency(
 /**
  * Format currency value with symbol and locale
  */
-export function formatRegionalCurrency(
-  amount: number,
-  currencyCode: CurrencyCode
-): string {
+export function formatRegionalCurrency(amount: number, currencyCode: CurrencyCode): string {
   const config = SUPPORTED_CURRENCIES[currencyCode] || SUPPORTED_CURRENCIES.USD;
   try {
     return new Intl.NumberFormat(config.locale, {

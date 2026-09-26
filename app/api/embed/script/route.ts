@@ -4,11 +4,11 @@
 /**
  * Embed JavaScript SDK
  * Issue #1415: Carbon offset API - embed on websites
- * 
+ *
  * This serves the client-side JavaScript for the embeddable widget
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
 import { validateApiKey } from '@/backend/src/services/carbonOffsetApi';
 
 const EMBED_SDK = `
@@ -306,7 +306,6 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         'Access-Control-Allow-Origin': '*',
       },
     });
-
   } catch (error) {
     console.error('Serve embed script error:', error);
     return new NextResponse('Internal server error', { status: 500 });
